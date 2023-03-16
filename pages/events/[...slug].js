@@ -1,20 +1,14 @@
-import { getFilteredEvents } from '../../dummy-data';
+import { getFilteredEvents } from '../../helpers/api-utils';
 import { useRouter } from 'next/router';
 import EventsList from '../../components/events/EventsList/EventsList';
 import ResultsTitle from '../../components/events/ResultsTitle/ResultsTitle';
 import Button from '../../components/ui/Button/Button';
 import ErrorAlert from '../../components/ui/ErrorAlert/ErrorAlert';
 
-const FilteredEventPage = () => {
-  const router = useRouter();
-  const filterData = router.query?.slug;
-
-  if (!filterData) {
-    return <p>Loading...</p>;
-  }
-  const year = Number(filterData[0]);
-  const month = Number(filterData[1]);
-  if (isNaN(year) || isNaN(month) || month < 0 || month > 12) {
+const FilteredEventPage = (props) => {
+  const { filteredEvents, hasError, date } = props;
+  console.log(props);
+  if (hasError) {
     return (
       <ErrorAlert>
         <p>Invalid filter</p>
@@ -23,13 +17,11 @@ const FilteredEventPage = () => {
     );
   }
 
-  const date = new Date(year, month - 1);
-
-  const filteredEvents = getFilteredEvents({ year, month });
+  const filteredDate = new Date(date.year, date.month - 1);
 
   return (
     <>
-      <ResultsTitle date={date} />
+      <ResultsTitle date={filteredDate} />
 
       {!filteredEvents || filteredEvents.length === 0 ? (
         <>
@@ -43,4 +35,27 @@ const FilteredEventPage = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const filterData = params.slug;
+  const year = Number(filterData[0]);
+  const month = Number(filterData[1]);
+  if (isNaN(year) || isNaN(month) || month < 0 || month > 12) {
+    return { hasError: true };
+  }
+
+  const filteredEvents = await getFilteredEvents({ year, month });
+
+  return {
+    props: {
+      filteredEvents,
+      date: {
+        year,
+        month
+      }
+    }
+  };
+}
+
 export default FilteredEventPage;
