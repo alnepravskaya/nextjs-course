@@ -4,16 +4,27 @@ import EventsList from '../../components/events/EventsList/EventsList';
 import ResultsTitle from '../../components/events/ResultsTitle/ResultsTitle';
 import Button from '../../components/ui/Button/Button';
 import ErrorAlert from '../../components/ui/ErrorAlert/ErrorAlert';
+import Head from 'next/head';
 
 const FilteredEventPage = (props) => {
   const { filteredEvents, hasError, date } = props;
-  console.log(props);
+
+  const pageHeadData = (
+    <Head>
+      <title>Filtered Event</title>
+      <meta name="description" conten={`All events for ${date.year}/${date.month} `} />
+    </Head>
+  );
+
   if (hasError) {
     return (
-      <ErrorAlert>
-        <p>Invalid filter</p>
-        <Button link="/">Show all event</Button>
-      </ErrorAlert>
+      <>
+        {pageHeadData}
+        <ErrorAlert>
+          <p>Invalid filter</p>
+          <Button link="/">Show all event</Button>
+        </ErrorAlert>
+      </>
     );
   }
 
@@ -21,6 +32,8 @@ const FilteredEventPage = (props) => {
 
   return (
     <>
+      {pageHeadData}
+
       <ResultsTitle date={filteredDate} />
 
       {!filteredEvents || filteredEvents.length === 0 ? (

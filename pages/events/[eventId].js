@@ -4,6 +4,7 @@ import EventSummary from '../../components/eventDetail/EventSummary/EventSummary
 import EventLogistics from '../../components/eventDetail/EventLogistics/EventLogistics';
 import EventContent from '../../components/eventDetail/EventContent/EventContent';
 import ErrorAlert from '../../components/ui/ErrorAlert/ErrorAlert';
+import Head from 'next/head';
 
 const EventDetailPage = (props) => {
   const event = props.event;
@@ -12,6 +13,10 @@ const EventDetailPage = (props) => {
     <>
       {!!event ? (
         <div>
+          <Head>
+            <title>{event.title}</title>
+            <meta name="description" conten={event.description} />
+          </Head>
           <EventSummary title={event.title}></EventSummary>
           <EventLogistics
             date={event.date}
