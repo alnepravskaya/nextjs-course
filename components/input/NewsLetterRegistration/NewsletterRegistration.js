@@ -1,12 +1,17 @@
 import classes from './NewsletterRegistration.module.css';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
+import NotificationContext from '../../../store/notification';
 
 const NewsletterRegistration = () => {
+  const { showNotification } = useContext(NotificationContext);
   const [email, setEmail] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState('');
   const registrationHandler = (event) => {
     event.preventDefault();
+    showNotification({
+      title: 'Subscribing',
+      message: 'Subscribing for updates',
+      status: 'pending'
+    });
 
     fetch('api/subscription', {
       method: 'POST',
@@ -15,20 +20,28 @@ const NewsletterRegistration = () => {
         'Content-Type': 'application.json'
       }
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === 'Subscribed successfully') {
-          setEmail('');
-          setIsSuccess(true);
-          setTimeout(() => {
-            setIsSuccess(false);
-          }, 5000);
-        } else {
-          setError(data.message);
-          setTimeout(() => {
-            setError('');
-          }, 5000);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
+
+        return response.json().then((data) => {
+          throw new Error(data.message || 'Something went wrong!');
+        });
+      })
+      .then((data) => {
+        showNotification({
+          title: 'Success',
+          message: 'Subscribed successfully',
+          status: 'success'
+        });
+      })
+      .catch((error) => {
+        showNotification({
+          title: 'Error',
+          message: error.message || 'Something went wrong',
+          status: 'error'
+        });
       });
   };
 
@@ -40,9 +53,7 @@ const NewsletterRegistration = () => {
     <section className={classes.newsletter}>
       <h2>You can subscribe to our lovely email newsletter to not miss new events.</h2>
       <form onSubmit={registrationHandler}>
-        <div
-          className={`${classes.control} ${isSuccess || !!error ? classes['space-collapse'] : ''}`}
-        >
+        <div className={classes.control}>
           <input
             type="email"
             id="email"
@@ -53,9 +64,6 @@ const NewsletterRegistration = () => {
           />
           <button>Subscribe</button>
         </div>
-
-        {isSuccess && <p className={classes.text}> You subscribed successfully</p>}
-        {error && <p className={classes.text}> {error}</p>}
       </form>
     </section>
   );
