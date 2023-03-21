@@ -9,6 +9,8 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "db": "^3.9.0",
+    "mongo": "^0.1.0",
     "next": "^13.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

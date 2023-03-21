@@ -1,0 +1,34 @@
+.comments {
+  margin: 3rem auto;
+  width: 90%;
+  max-width: 40rem;
+  text-align: center;
+}
+
+.comments button {
+  height: 40px;
+  font: inherit;
+  padding: 0 12px;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #03be9f;
+  border: 1px solid #03be9f;
+  cursor: pointer;
+}
+
+.comments button:hover,
+.comments button:active {
+  background-color: #dcfff9;
+}
+
+.comments .text {
+  padding: 8px;
+}
+
+.comments .comment {
+  padding-bottom: 40px;
+}
+
+.comments .comment + .comments .text {
+  padding-bottom: 40px;
+}

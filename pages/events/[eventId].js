@@ -5,6 +5,7 @@ import EventLogistics from '../../components/eventDetail/EventLogistics/EventLog
 import EventContent from '../../components/eventDetail/EventContent/EventContent';
 import ErrorAlert from '../../components/ui/ErrorAlert/ErrorAlert';
 import Head from 'next/head';
+import Comments from '../../components/input/Comments/Comments';
 
 const EventDetailPage = (props) => {
   const event = props.event;
@@ -25,6 +26,7 @@ const EventDetailPage = (props) => {
             imageAlt={event.title}
           ></EventLogistics>
           <EventContent>{event.description}</EventContent>
+          <Comments eventId={event.id} />
         </div>
       ) : (
         <ErrorAlert>
